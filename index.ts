@@ -11,6 +11,7 @@ import{optionalouth} from "./middleware/optionalouth.ts"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { S3Client,ListBucketsCommand,ListObjectsV2Command,GetObjectCommand,PutObjectCommand } from "@aws-sdk/client-s3";
 import starttranscoding from "./starttranscoding.ts";
+import transcripting from "./transcripting.ts";
 
 
 
@@ -21,6 +22,7 @@ const ACCOUNT_ID=process.env.ACCOUNT_ID!;
 const s3=new S3Client({
     region: "auto", 
     endpoint: `https://${ACCOUNT_ID}.r2.cloudflarestorage.com`,
+    
    
     credentials: {
       accessKeyId: ACCESS_KEY_ID,
@@ -232,6 +234,7 @@ app.post("/api/uploads",authmiddleware,async (req,res)=>{
             message:"uplaads succesfully"
         })
         starttranscoding(video_url,rest.id);
+        transcripting(rest.id,video_url);
     } catch (error) {
         console.log(error);
         res.status(400).json({message:"something went wrogn"})

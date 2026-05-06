@@ -1,0 +1,41 @@
+name: Video Transcription
+on:
+  repository_dispatch:
+    types: [generate-transcript]
+
+jobs:
+  transcribe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup FFmpeg
+        uses: AnimMouse/setup-ffmpeg@v1
+
+      - name: Download Video
+        run: curl -L "${{ github.event.client_payload.inputUrl }}" -o input.mp4
+
+      - name: Extract Audio (Optimized for AI)
+        run: ffmpeg -i input.mp4 -ar 16000 -ac 1 -c:a pcm_s16le audio.wav
+
+      - name: Generate Transcript (Whisper)
+        run: |
+          pip install -U openai-whisper
+          whisper audio.wav --model base --output_format json --output_dir ./transcripts
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Sync to Meilisearch and DB
+        env:
+          MEILI_HOST: ${{ secrets.MEILI_HOST }}
+          MEILI_KEY: ${{ secrets.MEILI_KEY }}
+          VIDEO_ID: ${{ github.event.client_payload.videoId }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          bun install meilisearch @aws-sdk/client-s3 pg
+          bun run scripts/sync-transcript.ts

@@ -23,6 +23,7 @@ model user{
   subscount    Int     @default(0)
   description  String?  
   uploads      uploads[]
+ 
 }
 
 enum Gender{
@@ -30,6 +31,14 @@ enum Gender{
   female
   others
 }
+
+enum Videostatus{
+  PENDING
+  READY
+  PROCESSING
+  FAILED
+}
+
 
 model uploads{
   id          String  @id    @default(uuid())
@@ -43,14 +52,27 @@ model uploads{
   views       Int     @default(0)
   type        Type?
   likes        Int     @default(0)
-}
-enum Videostatus{
-  READY
-  FAILED
-  PROCESSING
- PENDING  
 
+  transcripts transcripts[]
+  
 }
+
+
+
+model transcripts{
+  id      String @id @default(uuid())
+  videoid String 
+  object_url String
+  upload     uploads @relation(fields: [videoid], references: [id])
+}
+
+
+
+
+
+
+
+
 
 enum Type{
   public
