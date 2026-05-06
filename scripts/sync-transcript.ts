@@ -55,7 +55,7 @@ async function run() {
         }));
 
         const index = meili.index(`transcript_snippets`);
-        const task = await index.addDocuments(snippets);
+        const task = await index.updateDocuments(snippets,{ skipCreation: true });
         
         console.log(`Task enqueued (UID: ${task.taskUid}). Waiting for indexing...`);
         
