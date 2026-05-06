@@ -4,9 +4,9 @@ import {readFileSync} from 'fs';
 import { Meilisearch } from "meilisearch";
 import {Client}from "pg";
 
-const ACCESS_KEY_ID=process.env.ACCESS_KEY_ID!;
-const SECRET_ACCESS_KEY=process.env.SECRET_ACCESS_KEY!;
-const ACCOUNT_ID=process.env.ACCOUNT_ID!;
+const ACCESS_KEY_ID=process.env.R2_ACCESS_KEY_ID!;
+const SECRET_ACCESS_KEY=process.env.R2_SECRET_ACCESS_KEY!;
+const ACCOUNT_ID=process.env.R2_ACCOUNT_ID!;
 const client=new S3Client({
     region:"auto",
     endpoint: `https://${ACCOUNT_ID}.r2.cloudflarestorage.com`,
