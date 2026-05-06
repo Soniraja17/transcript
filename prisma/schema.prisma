@@ -61,7 +61,7 @@ model uploads{
 
 model transcripts{
   id      String @id @default(uuid())
-  videoid String 
+  videoid String @unique
   object_url String
   upload     uploads @relation(fields: [videoid], references: [id])
 }

@@ -32,7 +32,7 @@ const meili= new Meilisearch({
     host: process.env.MEILI_HOST!, apiKey: process.env.MEILI_KEY!
 })
 const snippets= transcriptData.segments.map((s:any)=>({
-    id:`${videoId}_${s.id}`,
+    id:`${videoId}_${s.id}`.replace(/[^a-zA-Z0-9-_]/g, '_'),
     videoId:videoId,
     text:s.text.trim(),
     start:s.start
@@ -44,7 +44,9 @@ const r2url=`https://pub-69011fd091b04e43be7212bbe23d52e3.r2.dev/${videoId}.json
 
 const pg=new Client({
     connectionString: process.env.DATABASE_URL,
-    ssl: true
+    ssl: {
+        rejectUnauthorized: false
+    }
 })
 
 try{
