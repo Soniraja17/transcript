@@ -48,7 +48,7 @@ async function run() {
         console.log("Preparing Meilisearch segments...");
         const snippets = transcriptData.segments.map((s: any) => ({
             // Sanitize ID: Meilisearch only allows alphanumeric, hyphens, and underscores
-            id: `${s.id}`.replace(/[^a-zA-Z0-9-_]/g, '_'),
+            id: `${videoId}_${s.id}`.replace(/[^a-zA-Z0-9-_]/g, '_'),
             videoId: videoId,
             text: s.text.trim(),
             start: s.start
@@ -56,7 +56,7 @@ async function run() {
 
         const index = meili.index(`transcript_snippets`);
 
-        const task = await index.addDocuments(snippets);
+        const task = await index.addDocuments(snippets,{ primaryKey: 'id' });
         await meili.tasks.waitForTask(task.taskUid);
         
         console.log(`Task enqueued (UID: ${task.taskUid}). Waiting for indexing...`);
