@@ -38,9 +38,10 @@ const snippets= transcriptData.segments.map((s:any)=>({
     start:s.start
 }))
 
-await meili.index(`transcript_snippets`).addDocuments(snippets);
+await meili.index(`transcript_snippets`).addDocuments(snippets).waitTask();
+ 
 
-const r2url=`https://pub-69011fd091b04e43be7212bbe23d52e3.r2.dev/${videoId}.json`
+const r2url=`https://pub-cfa1b38db72f46c097b4512d796dc17f.r2.dev/${videoId}.json`
 
 const pg=new Client({
     connectionString: process.env.DATABASE_URL,
